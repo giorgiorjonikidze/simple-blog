@@ -17,6 +17,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
+Route::get('/admins-only', function () {
+    return "only admins can view this page.";
+})->middleware('can:visitAdminPages');
+
 
 // user routes 
 Route::get('/', [UserController::class, "showCorrectHomepage"])->name('mustBeLoggedIn');
@@ -30,10 +34,9 @@ Route::get('/create-post', [PostController::class, "showCreateForm"])->middlewar
 Route::post('/create-post', [PostController::class, "storeNewPost"])->middleware('mustBeLoggedIn');
 
 Route::get('/post/{post}', [PostController::class, "viewSinglePost"]);
+Route::delete('/post/{post}', [PostController::class, "delete"])->middleware('can:delete,post');
+Route::get('/post/{post}/edit', [PostController::class, "showEditFrom"])->middleware('can:update,post');
+Route::put('/post/{post}', [PostController::class, "actuallyUpdate"])->middleware('can:update,post');
 
 // profile routes
 Route::get('/profile/{user:username}', [UserController::class, 'profile']);
-
-
-
-
